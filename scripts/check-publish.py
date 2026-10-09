@@ -1,7 +1,7 @@
 """Review the Git index for private files and common credential material.
 
 This is a narrow pre-publication check, not a general secret-scanning guarantee.
-Only filenames and credential key names are reported, never matched values.
+Only staged filenames are reported, never credential keys or matched values.
 """
 
 import io
@@ -20,7 +20,7 @@ def check_index() -> list[str]:
     root = Path(git_bytes("rev-parse", "--show-toplevel").decode().strip())
     paths = git_bytes("ls-files", "-z").decode().split("\0")
     failures: list[str] = []
-    local_secrets: dict[str, bytes] = {}
+    local_secrets: set[bytes] = set()
     environment = root / ".env"
     if environment.is_file():
         for line in environment.read_text(encoding="utf-8").splitlines():
@@ -28,7 +28,7 @@ def check_index() -> list[str]:
             value = value.strip().strip("\"'")
             if (separator and re.search(r"SECRET|KEY|TOKEN|PASSWORD|PEPPER", key)
                     and len(value) >= 16 and not value.startswith("change-this-")):
-                local_secrets[key.strip()] = value.encode()
+                local_secrets.add(value.encode())
     forbidden = re.compile(
         r"(^private/|(^|/)\.env$|(^|/)(node_modules|output|\.venv|bin|obj)/|"
         r"\.(pem|key|pfx)$)", re.IGNORECASE,
@@ -47,9 +47,9 @@ def check_index() -> list[str]:
             with zipfile.ZipFile(io.BytesIO(content)) as deck:
                 content = b"\n".join(deck.read(name) for name in deck.namelist()
                                      if name.endswith(".xml"))
-        for key, secret in local_secrets.items():
+        for secret in local_secrets:
             if secret in content:
-                failures.append(f"Local credential {key} found in: {path}")
+                failures.append(f"Local credential found in: {path}")
         if any(pattern.search(content) for pattern in token_patterns):
             failures.append(f"Possible token or private key in: {path}")
     return failures

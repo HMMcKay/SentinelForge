@@ -12,6 +12,7 @@ These checks were executed locally while preparing the first full-project GitHub
 | Python source | Ruff against backend, CLI, and publication checks | Passed |
 | Frontend | ESLint and Vitest | Lint passed; 14 tests passed |
 | Frontend | TypeScript/Vite production build | Passed |
+| Browser | Local Playwright suite with mocked API | 4 passed; live-stack test skipped without a running backend |
 | Windows sensor | Locked NuGet restore and Release xUnit suite | 22 passed |
 | Simulations | PowerShell containment/safety suite | 46 assertions passed |
 | Deployment configuration | `docker compose config --quiet` | Passed |
@@ -33,3 +34,9 @@ Docker Desktop's Linux engine was unavailable, so this pass did not rebuild imag
 Real Sysmon collection, Windows service installation, final service-identity DPAPI behavior, and non-dry live simulations were not exercised. The checks above do not establish those integrations or production readiness.
 
 The pre-publication credential check is intentionally narrow. It is useful for catching local secrets and common token shapes, not proof that every possible sensitive value is absent.
+
+## Hosted checks for the initial project commit
+
+Commit [`25be303`](https://github.com/HMMcKay/SentinelForge/commit/25be3034bde800254b0a58ef089a943b9ad3ec74) was pushed during this publication pass. The [CI run](https://github.com/HMMcKay/SentinelForge/actions/runs/37871223926) passed backend, frontend, CLI, sensor, scenario-safety, all four container builds, and the live Compose/browser flow. The [supply-chain run](https://github.com/HMMcKay/SentinelForge/actions/runs/37871223962) passed dependency audits and SBOM generation; dependency review was skipped because this was a push rather than a pull request.
+
+The [initial CodeQL run](https://github.com/HMMcKay/SentinelForge/actions/runs/37871223931) completed all three language analyses and flagged the credential check's reporting path as possible clear-text logging. That path reported key names rather than credential values. The reporting now includes only staged filenames, with synthetic regression tests covering omission of both keys and values. The current CodeQL alert state should be checked in the repository's Security tab rather than inferred from a successful analysis job.
