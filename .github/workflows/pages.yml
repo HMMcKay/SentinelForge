@@ -33,7 +33,8 @@ jobs:
   deploy:
     needs: package
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    # Leave room for the Pages action's ten-minute deployment timeout.
+    timeout-minutes: 12
     permissions:
       pages: write
       id-token: write
