@@ -1,0 +1,24 @@
+title: Synthetic Security-Control Disable Event
+id: SF-SYNTHETIC-CONTROL-DISABLE
+status: test
+description: Detects SentinelForge telemetry that represents a security-control disable action.
+author: SentinelForge
+date: "2026-07-27"
+version: 1
+logsource:
+  product: windows
+  category: security_control
+detection:
+  selection:
+    event_type: security_control
+    metadata.action: disable
+    metadata.synthetic: true
+  condition: selection
+falsepositives:
+  - Expected SentinelForge demonstration activity.
+level: low
+tags:
+  - attack.t1685
+investigation: Confirm that the event is synthetic; any equivalent non-synthetic control change requires immediate validation.
+sentinelforge:
+  confidence: 100

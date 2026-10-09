@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SentinelForge.Agent", "src\SentinelForge.Agent\SentinelForge.Agent.csproj", "{DB1C9F74-8229-4D34-82F2-5735E6441811}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SentinelForge.Agent.Tests", "tests\SentinelForge.Agent.Tests\SentinelForge.Agent.Tests.csproj", "{530D07B1-A3DD-4B5F-AF44-F7A70DF2AEC2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB1C9F74-8229-4D34-82F2-5735E6441811}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB1C9F74-8229-4D34-82F2-5735E6441811}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB1C9F74-8229-4D34-82F2-5735E6441811}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB1C9F74-8229-4D34-82F2-5735E6441811}.Release|Any CPU.Build.0 = Release|Any CPU
+		{530D07B1-A3DD-4B5F-AF44-F7A70DF2AEC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{530D07B1-A3DD-4B5F-AF44-F7A70DF2AEC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{530D07B1-A3DD-4B5F-AF44-F7A70DF2AEC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{530D07B1-A3DD-4B5F-AF44-F7A70DF2AEC2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

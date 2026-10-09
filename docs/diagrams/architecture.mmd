@@ -1,0 +1,10 @@
+flowchart LR
+    Sysmon --> Agent["Windows sensor"]
+    Agent <--> Spool["Bounded spool"]
+    Agent -->|"HTTPS batches"| API["FastAPI"]
+    API --> PostgreSQL
+    API --> Detection["Sigma subset + correlation"]
+    Detection --> PostgreSQL
+    Browser["React dashboard"] --> API
+    API -->|"WebSocket"| Browser
+    CLI["sentinelctl"] --> API

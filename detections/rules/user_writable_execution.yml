@@ -1,0 +1,25 @@
+title: Execution from a User-Writable Temporary Directory
+id: SF-USER-WRITABLE-EXECUTION
+status: experimental
+description: Detects process execution from common per-user temporary locations.
+author: SentinelForge
+date: "2026-07-27"
+version: 1
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    event_type: process_start
+    process.executable|contains:
+      - "\\AppData\\Local\\Temp\\"
+      - "\\Downloads\\"
+  condition: selection
+falsepositives:
+  - Portable applications and installers launched directly from a user download or temporary directory.
+level: medium
+tags:
+  - attack.t1204.002
+investigation: Check file provenance, signature, hash reputation, parent process, user intent, and subsequent behavior.
+sentinelforge:
+  confidence: 68

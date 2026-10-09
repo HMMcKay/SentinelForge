@@ -1,0 +1,20 @@
+flowchart TB
+    subgraph untrusted["Untrusted input boundary"]
+        SysmonXML["Event XML"]
+        OperatorInput["Browser / CLI input"]
+    end
+    subgraph win["Windows lab VM"]
+        Agent["Sensor service"]
+        Spool["ACL-protected spool"]
+        Sandbox["Simulation sandbox"]
+    end
+    subgraph docker["Compose trust boundary"]
+        Nginx
+        API
+        DB[("PostgreSQL")]
+    end
+    SysmonXML --> Agent
+    Agent <--> Spool
+    Agent --> API
+    OperatorInput --> Nginx --> API --> DB
+    Agent -. "does not execute" .-> Sandbox

@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sentinelctl"
+version = "0.1.0"
+description = "Operator CLI for SentinelForge"
+requires-python = ">=3.12"
+dependencies = [
+  "httpx==0.28.1",
+  "PyYAML==6.0.2",
+  "typer==0.16.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==8.4.1", "ruff==0.12.5"]
+
+[project.scripts]
+sentinelctl = "sentinelctl.main:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["sentinelctl"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["B008"] # Typer declares options and arguments in function signatures.

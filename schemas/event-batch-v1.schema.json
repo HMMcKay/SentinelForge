@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentinelforge.local/schemas/event-batch-v1.schema.json",
+  "title": "SentinelForge event batch v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sensor_id", "schema_version", "batch_id", "events"],
+  "properties": {
+    "sensor_id": {"type": "string", "format": "uuid"},
+    "schema_version": {"const": "1.0"},
+    "batch_id": {"type": "string", "format": "uuid"},
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 500,
+      "items": {"$ref": "normalized-event-v1.schema.json"}
+    }
+  }
+}

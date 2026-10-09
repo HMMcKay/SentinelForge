@@ -1,0 +1,30 @@
+title: Encoded PowerShell Command
+id: SF-POWERSHELL-ENCODED
+status: experimental
+description: Detects PowerShell execution using an encoded-command switch.
+author: SentinelForge
+date: "2026-07-27"
+version: 1
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_process:
+    event_type: process_start
+    process.name:
+      - powershell.exe
+      - pwsh.exe
+  selection_cli:
+    process.command_line|contains:
+      - "-encodedcommand"
+      - "-enc "
+  condition: selection_process and selection_cli
+falsepositives:
+  - Administrative automation that legitimately transports encoded scripts.
+level: high
+tags:
+  - attack.t1059.001
+  - attack.t1027.010
+investigation: Decode the payload offline, validate the signer and parent process, and review adjacent network and file activity.
+sentinelforge:
+  confidence: 88

@@ -1,0 +1,23 @@
+{
+  "event_id": "8eb2967c-7b6b-5c58-bafb-4c21eb55bcf4",
+  "event_time": "2026-01-15T18:30:00Z",
+  "event_type": "process_start",
+  "scenario_run_id": "1fd1b1f2-d6b4-51b7-807a-40da8dcffdab",
+  "raw_event_ref": "sysmon:1:1042",
+  "source": {"provider": "Microsoft-Windows-Sysmon", "channel": "Microsoft-Windows-Sysmon/Operational", "event_code": "1", "record_id": "1042"},
+  "host": {"hostname": "LAB-WS01", "os_name": "Windows 11", "os_version": "24H2"},
+  "user": {"name": "analyst", "domain": "LAB", "sid": "S-1-5-21-1000"},
+  "process": {
+    "pid": 4812,
+    "guid": "{11111111-1111-1111-1111-111111111111}",
+    "name": "powershell.exe",
+    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "command_line": "powershell.exe -NoProfile -File benign-demo.ps1",
+    "parent_pid": 2240,
+    "parent_guid": "{22222222-2222-2222-2222-222222222222}",
+    "parent_name": "cmd.exe",
+    "parent_executable": "C:\\Windows\\System32\\cmd.exe"
+  },
+  "attack_tags": ["T1059.001"],
+  "metadata": {"synthetic": true, "dataset_seed": 1337}
+}

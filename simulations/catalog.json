@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "scenarios": [
+    {
+      "id": "registry-run-key",
+      "name": "Scoped registry Run-key pattern",
+      "description": "Writes a benign placeholder value beneath an HKCU SentinelForgeLab key whose suffix mirrors CurrentVersion\\Run; it never touches the real Windows autostart key.",
+      "attack_techniques": ["T1547.001"],
+      "requires_windows": true,
+      "expected_event_types": ["registry_set"]
+    },
+    {
+      "id": "scheduled-task",
+      "name": "Disabled scheduled task",
+      "description": "Registers one disabled, uniquely named task in the SentinelForgeLab task folder with a fixed no-op action.",
+      "attack_techniques": ["T1053.005"],
+      "requires_windows": true,
+      "expected_event_types": ["process_start", "file_create", "registry_set"]
+    },
+    {
+      "id": "benign-process-chain",
+      "name": "Benign process lineage",
+      "description": "Starts cmd.exe with a contained fixed launcher; it starts PowerShell, whose fixed child script runs `cmd.exe /d /c exit 0` and writes a marker through a managed API.",
+      "attack_techniques": ["T1059.003"],
+      "requires_windows": true,
+      "expected_event_types": ["process_start"]
+    },
+    {
+      "id": "encoded-powershell",
+      "name": "Benign encoded PowerShell",
+      "description": "Runs a fixed UTF-16LE encoded command that writes one marker inside the run directory.",
+      "attack_techniques": ["T1059.001", "T1027.010"],
+      "requires_windows": true,
+      "expected_event_types": ["process_start", "file_create"]
+    },
+    {
+      "id": "user-writable-execution",
+      "name": "Execution from user-writable sandbox",
+      "description": "Copies cmd.exe into the run directory and executes only `/d /c exit 0` from that copy.",
+      "attack_techniques": ["T1204.002"],
+      "requires_windows": true,
+      "expected_event_types": ["file_create", "process_start"]
+    },
+    {
+      "id": "dns-localhost",
+      "name": "DNS and loopback interaction",
+      "description": "Resolves only localhost and connects only to an ephemeral loopback listener owned by the same process.",
+      "attack_techniques": ["T1071.004"],
+      "requires_windows": false,
+      "expected_event_types": ["dns_query", "network_connection"]
+    },
+    {
+      "id": "ransomware-emulator",
+      "name": "Synthetic-file ransomware behavior",
+      "description": "Creates SentinelForge-marked files inside the run directory, backs them up, applies a reversible XOR transform, and renames only those generated files.",
+      "attack_techniques": ["T1486"],
+      "requires_windows": false,
+      "expected_event_types": ["file_create", "file_delete"]
+    },
+    {
+      "id": "security-control-events",
+      "name": "Synthetic security-control modification",
+      "description": "Emits normalized JSON describing a simulated control change; no operating-system security setting is read or modified.",
+      "attack_techniques": ["T1685"],
+      "requires_windows": false,
+      "expected_event_types": ["security_control"]
+    }
+  ]
+}

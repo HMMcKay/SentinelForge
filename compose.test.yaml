@@ -1,0 +1,32 @@
+name: sentinelforge-test
+
+services:
+  backend-tests:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: test
+    environment:
+      SENTINELFORGE_DATABASE_URL: "sqlite+pysqlite:///:memory:"
+      SENTINELFORGE_ENROLLMENT_KEY: test-enrollment-secret-that-is-long-enough
+      SENTINELFORGE_ADMIN_KEY: test-admin-secret-that-is-long-enough
+      SENTINELFORGE_TOKEN_PEPPER: test-token-pepper-that-is-long-enough
+      SENTINELFORGE_RULES_PATH: /app/detections/rules
+      SENTINELFORGE_LAB_MODE: "0"
+    volumes:
+      - ./detections:/app/detections:ro
+    command: ["pytest", "-q", "tests"]
+
+  frontend-tests:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: test
+    command: ["npm", "test", "--", "--run"]
+
+  cli-tests:
+    build:
+      context: ./cli
+      dockerfile: Dockerfile
+      target: test
+    command: ["pytest", "-q", "tests"]

@@ -1,0 +1,3 @@
+# Disabled scheduled task
+
+ATT&CK: T1053.005 (Scheduled Task/Job: Scheduled Task). The scenario writes fixed Task Scheduler XML inside the contained run directory, with both the task and its far-future time trigger disabled and the no-op action `cmd.exe /d /c exit 0`. It invokes the system `schtasks.exe /Create` with argument-list APIs so the live process telemetry matches the detection, then verifies the task is disabled. The task name must contain the backend UUID and lives below `\SentinelForgeLab\`; it is never enabled or started. Cleanup unregisters only that predeclared allowlisted task. Task creation is common for maintenance software; inspect author, task path, action, trigger, principal, and subsequent process lineage.

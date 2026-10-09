@@ -1,0 +1,33 @@
+title: Synthetic File-Activity Write Burst
+id: SF-FILE-MODIFICATION-BURST
+status: experimental
+description: Detects at least five file create or modification events in a short host-scoped window.
+author: SentinelForge
+date: "2026-07-27"
+version: 1
+logsource:
+  product: windows
+  category: file_event
+detection:
+  selection_file:
+    event_type:
+      - file_create
+      - file_modify
+  condition: selection_file
+falsepositives:
+  - Build systems, archive extraction, synchronization tools, and bulk document processing.
+level: high
+tags:
+  - attack.t1486
+investigation: Review the responsible process lineage, extension entropy, write rate, file recovery options, and host isolation requirements.
+sentinelforge:
+  confidence: 80
+  correlation:
+    type: threshold
+    selection: selection_file
+    count: 5
+    within: 30s
+    group_by:
+      - host.hostname
+      - process.guid
+    deduplicate: 5m

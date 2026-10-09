@@ -1,0 +1,52 @@
+# Secrets and private owner material
+.env
+.env.*
+!.env.example
+private/
+*.pem
+*.key
+*.pfx
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+.uv-cache/
+.uv-python/
+*.egg-info/
+htmlcov/
+.coverage*
+
+# Node
+node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/playwright-report/
+frontend/test-results/
+.playwright-cli/
+
+# .NET
+agent/**/bin/
+agent/**/obj/
+agent/**/TestResults/
+
+# Runtime data
+data/
+/spool/
+exports/
+output/
+*.db
+*.db-shm
+*.db-wal
+
+# Editors / OS
+.idea/
+.vscode/
+*.user
+*.suo
+.DS_Store
+Thumbs.db

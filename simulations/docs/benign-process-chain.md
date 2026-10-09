@@ -1,0 +1,3 @@
+# Benign process chain
+
+ATT&CK: T1059.003 (Windows Command Shell). The runner starts `cmd.exe` with a generated fixed launcher in the contained run directory; that parent starts the built-in `powershell.exe` with the repository's fixed child script. The child starts one final `cmd.exe` with only `/d /c exit 0`, then writes a marker through .NET. Dynamic paths are passed through child environment variables and process arguments; no caller text enters a shell command. This produces the `cmd.exe` → `powershell.exe` lineage used by the live detection. Cleanup removes the launcher and marker. Shell ancestry is not malicious by itself; command content, user context, integrity, and correlated effects determine risk.

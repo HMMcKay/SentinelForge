@@ -1,0 +1,118 @@
+name: sentinelforge
+
+services:
+  database:
+    image: sentinelforge-postgres:17.10
+    build:
+      context: ./docker/postgres
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-sentinelforge}
+      POSTGRES_USER: ${POSTGRES_USER:-sentinelforge}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Copy .env.example to .env and set POSTGRES_PASSWORD}
+    volumes:
+      - sentinelforge-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    networks:
+      - data
+    security_opt:
+      - no-new-privileges:true
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    restart: unless-stopped
+    environment:
+      SENTINELFORGE_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-sentinelforge}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB:-sentinelforge}
+      SENTINELFORGE_ENROLLMENT_KEY: ${SENTINELFORGE_ENROLLMENT_KEY:?Set SENTINELFORGE_ENROLLMENT_KEY in .env}
+      SENTINELFORGE_ADMIN_KEY: ${SENTINELFORGE_ADMIN_KEY:?Set SENTINELFORGE_ADMIN_KEY in .env}
+      SENTINELFORGE_TOKEN_PEPPER: ${SENTINELFORGE_TOKEN_PEPPER:?Set SENTINELFORGE_TOKEN_PEPPER in .env}
+      SENTINELFORGE_LAB_MODE: ${SENTINELFORGE_LAB_MODE:-0}
+      SENTINELFORGE_LOG_LEVEL: ${SENTINELFORGE_LOG_LEVEL:-INFO}
+      SENTINELFORGE_RETENTION_DAYS: ${SENTINELFORGE_RETENTION_DAYS:-30}
+      SENTINELFORGE_MAX_BATCH_EVENTS: ${SENTINELFORGE_MAX_BATCH_EVENTS:-500}
+      SENTINELFORGE_CORS_ORIGINS: ${SENTINELFORGE_CORS_ORIGINS:-http://127.0.0.1:8080,http://localhost:8080}
+      SENTINELFORGE_RULES_PATH: /app/detections/rules
+      SENTINELFORGE_AUTO_CREATE_SCHEMA: "false"
+    volumes:
+      - ./detections:/app/detections:ro
+    ports:
+      - "${SENTINELFORGE_BIND_ADDRESS:-127.0.0.1}:${SENTINELFORGE_API_PORT:-8000}:8000"
+    depends_on:
+      database:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 20s
+    networks:
+      - data
+      - edge
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${SENTINELFORGE_BIND_ADDRESS:-127.0.0.1}:${SENTINELFORGE_WEB_PORT:-8080}:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8080/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    networks:
+      - edge
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  sentinelctl:
+    build:
+      context: ./cli
+      dockerfile: Dockerfile
+      target: production
+    profiles: ["tools"]
+    environment:
+      SENTINELFORGE_URL: http://backend:8000
+      SENTINELFORGE_ADMIN_KEY: ${SENTINELFORGE_ADMIN_KEY:?Set SENTINELFORGE_ADMIN_KEY in .env}
+    volumes:
+      - ./detections/rules:/rules:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - edge
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  sentinelforge-db:
+
+networks:
+  edge:
+    driver: bridge
+  data:
+    driver: bridge
+    internal: true

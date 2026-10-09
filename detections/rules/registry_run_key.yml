@@ -1,0 +1,26 @@
+title: Registry Run-Key Value Set
+id: SF-REGISTRY-RUN-KEY
+status: experimental
+description: Detects a value written to common per-user or machine Run keys.
+author: SentinelForge
+date: "2026-07-27"
+version: 1
+logsource:
+  product: windows
+  category: registry_set
+detection:
+  selection:
+    event_type: registry_set
+    registry.key_path|endswith:
+      - "\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+      - "\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce"
+    registry.operation: set
+  condition: selection
+falsepositives:
+  - Software installers and enterprise logon agents that register approved startup components.
+level: medium
+tags:
+  - attack.t1547.001
+investigation: Resolve the value target, inspect its signature and prevalence, and confirm whether the change aligns with an approved installation.
+sentinelforge:
+  confidence: 76

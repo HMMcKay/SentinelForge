@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="SentinelForge is an independent, Docker-first defensive security lab for safe simulations, Windows telemetry, explainable detections, and graph-based investigation."
+    />
+    <meta name="theme-color" content="#091114" />
+    <meta
+      property="og:title"
+      content="SentinelForge — from behavior to evidence"
+    />
+    <meta
+      property="og:description"
+      content="A local detection engineering lab. Safe simulations, endpoint telemetry, explainable alerts, and a forensic graph timeline."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://hmmckay.github.io/SentinelForge/"
+    />
+    <meta
+      property="og:image"
+      content="https://hmmckay.github.io/SentinelForge/assets/sentinelforge-overview.png"
+    />
+    <title>SentinelForge — from behavior to evidence</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="SentinelForge home"
+        ><img
+          src="assets/favicon.svg"
+          alt=""
+          width="34"
+          height="34"
+        />Sentinel<span>Forge</span></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="#workflow">How it works</a>
+        <a href="#engineering">Engineering</a>
+        <a href="#run">Run locally</a>
+        <a class="nav-source" href="https://github.com/HMMcKay/SentinelForge"
+          >Source <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero wrap" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="status-dot"></span> Independent project / defensive
+            security
+          </p>
+          <h1>
+            Follow the behavior.<br /><span>Understand the detection.</span>
+          </h1>
+          <p class="lead">
+            SentinelForge connects safe Windows simulations, endpoint telemetry,
+            and explainable alerts in a local detection lab. The graph timeline
+            keeps the evidence connected, so every result has a trail worth
+            investigating.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#workflow"
+              >Explore the detection path <span aria-hidden="true">↓</span></a
+            ><a
+              class="button secondary"
+              href="https://github.com/HMMcKay/SentinelForge"
+              >View the repository <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <p class="hero-note">
+            A hobby project built around a practical question: what happened,
+            why did a rule fire, and can the result be reproduced?
+          </p>
+        </div>
+        <div
+          class="hero-visual"
+          aria-label="Simplified SentinelForge evidence chain"
+        >
+          <div class="visual-label">
+            <span class="status-dot"></span> BEHAVIOR → TELEMETRY → EVIDENCE
+          </div>
+          <svg
+            viewBox="0 0 480 330"
+            role="img"
+            aria-labelledby="chain-title chain-desc"
+          >
+            <title id="chain-title">An explainable detection chain</title>
+            <desc id="chain-desc">
+              A lab process produces telemetry. A rule matches the telemetry and
+              an alert points back to the matched evidence. This is an
+              illustration, not a live event stream.
+            </desc>
+            <defs>
+              <pattern
+                id="grid"
+                width="24"
+                height="24"
+                patternUnits="userSpaceOnUse"
+              >
+                <circle cx="1" cy="1" r="1" fill="#223537" />
+              </pattern>
+              <marker
+                id="arrow"
+                markerWidth="8"
+                markerHeight="8"
+                refX="7"
+                refY="4"
+                orient="auto"
+              >
+                <path d="M0 0L8 4L0 8" fill="none" stroke="#6ea49a" />
+              </marker>
+            </defs>
+            <rect width="480" height="330" fill="url(#grid)" />
+            <g
+              fill="none"
+              stroke="#6ea49a"
+              stroke-width="1.5"
+              marker-end="url(#arrow)"
+            >
+              <path d="M126 96L231 150" />
+              <path d="M274 173L350 231" />
+              <path
+                d="M354 230Q418 130 294 164"
+                stroke="#e3b86d"
+                stroke-dasharray="5 5"
+              />
+            </g>
+            <g font-family="system-ui, sans-serif" text-anchor="middle">
+              <circle cx="108" cy="86" r="30" fill="#152a2a" stroke="#6ed3bc" />
+              <path
+                d="M95 80L101 86L95 92M108 93H120"
+                stroke="#8de6cd"
+                fill="none"
+                stroke-width="2"
+              />
+              <text x="108" y="137" fill="#e6f2ee" font-size="13">
+                Lab process
+              </text>
+              <text x="108" y="156" fill="#8caaa5" font-size="11">
+                controlled behavior
+              </text>
+              <circle
+                cx="255"
+                cy="162"
+                r="30"
+                fill="#152a2a"
+                stroke="#6ed3bc"
+              />
+              <path
+                d="M246 150H263M246 158H267M246 166H262M246 174H265"
+                stroke="#8de6cd"
+                stroke-width="2"
+              />
+              <text x="245" y="216" fill="#e6f2ee" font-size="13">
+                Normalized event
+              </text>
+              <text x="245" y="235" fill="#8caaa5" font-size="11">
+                stable schema + lineage
+              </text>
+              <circle
+                cx="368"
+                cy="250"
+                r="30"
+                fill="#31281a"
+                stroke="#e3b86d"
+              />
+              <path
+                d="M356 257L368 237L380 257ZM368 245V250M368 253V254"
+                stroke="#e3b86d"
+                fill="none"
+                stroke-width="1.5"
+              />
+              <text x="368" y="305" fill="#e6f2ee" font-size="13">
+                Explainable alert
+              </text>
+              <text x="389" y="134" fill="#e3b86d" font-size="11">
+                matched evidence
+              </text>
+            </g>
+          </svg>
+          <p>Illustrated relationship model · not a live feed</p>
+        </div>
+      </section>
+      <div class="project-facts wrap" aria-label="Project scope">
+        <div><span>Deployment</span><strong>Docker Compose</strong></div>
+        <div><span>Lab catalog</span><strong>8 scoped scenarios</strong></div>
+        <div><span>Detection pack</span><strong>7 curated rules</strong></div>
+        <div>
+          <span>Without Windows</span><strong>Deterministic demo</strong>
+        </div>
+      </div>
+      <section class="section wrap" id="dashboard">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">01 / The working application</p>
+            <h2>A small SOC view.<br />A traceable investigation.</h2>
+          </div>
+          <p>
+            Overview, alert triage, rule inspection, scenario controls, ATT&CK
+            coverage, and an evidence graph share the same event and alert
+            records.
+          </p>
+        </div>
+        <figure class="screenshot-frame">
+          <button
+            class="image-expand"
+            data-image="assets/sentinelforge-overview.png"
+            data-caption="SOC overview — real application capture using deterministic synthetic telemetry."
+            aria-label="Enlarge the SOC overview screenshot"
+          >
+            <img
+              src="assets/sentinelforge-overview.png"
+              width="1440"
+              height="1090"
+              alt="SentinelForge dashboard with event totals, seven alerts, synthetic telemetry labels, and recent activity."
+              loading="lazy"
+            /><span>Inspect screenshot <span aria-hidden="true">↗</span></span>
+          </button>
+          <figcaption>
+            <span class="capture-tag">Real application capture</span> Seed 1337
+            · synthetic telemetry · captured for the July 27, 2026 validation
+            record. These are not live measurements.
+          </figcaption>
+        </figure>
+      </section>
+      <section class="section section-tint" id="workflow">
+        <div class="wrap">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">02 / One behavior, end to end</p>
+              <h2>Detection is a path,<br />not just a rule match.</h2>
+            </div>
+            <p>
+              Select a stage to follow how SentinelForge turns a controlled
+              behavior into reviewable evidence.
+            </p>
+          </div>
+          <div class="workflow-steps" aria-label="Detection workflow stages">
+            <button
+              type="button"
+              data-stage="simulate"
+              aria-pressed="true"
+              aria-controls="stage-detail"
+            >
+              <span>01</span>Simulate</button
+            ><button
+              type="button"
+              data-stage="collect"
+              aria-pressed="false"
+              aria-controls="stage-detail"
+            >
+              <span>02</span>Collect</button
+            ><button
+              type="button"
+              data-stage="normalize"
+              aria-pressed="false"
+              aria-controls="stage-detail"
+            >
+              <span>03</span>Normalize</button
+            ><button
+              type="button"
+              data-stage="detect"
+              aria-pressed="false"
+              aria-controls="stage-detail"
+            >
+              <span>04</span>Detect</button
+            ><button
+              type="button"
+              data-stage="investigate"
+              aria-pressed="false"
+              aria-controls="stage-detail"
+            >
+              <span>05</span>Investigate</button
+            ><button
+              type="button"
+              data-stage="verify"
+              aria-pressed="false"
+              aria-controls="stage-detail"
+            >
+              <span>06</span>Verify
+            </button>
+          </div>
+          <div
+            class="stage-detail"
+            id="stage-detail"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <div>
+              <p class="eyebrow" id="stage-label">01 / Simulate</p>
+              <h3 id="stage-title">
+                Create a behavior inside a defined boundary.
+              </h3>
+              <p id="stage-description">
+                Eight allowlisted scenarios cover benign process chains, encoded
+                PowerShell, scoped registry and task activity, localhost
+                interaction, and file-burst behavior against a synthetic corpus.
+                Dry-run, independent lab gates, and cleanup manifests make the
+                boundary explicit.
+              </p>
+              <a
+                class="text-link"
+                id="stage-link"
+                href="https://github.com/HMMcKay/SentinelForge/tree/main/simulations"
+                >Inspect the simulation runner
+                <span aria-hidden="true">↗</span></a
+              >
+            </div>
+            <div class="stage-contract">
+              <p class="eyebrow">Contract at this boundary</p>
+              <p id="stage-contract">
+                Known scenario + owned sandbox + cleanup manifest. No arbitrary
+                remote scripts or user-selected targets.
+              </p>
+            </div>
+          </div>
+          <p class="footnote">
+            No Windows VM? The seeded demo enters at ingestion with
+            deterministic synthetic events. It exercises detection and
+            investigation without claiming that a real endpoint performed the
+            behavior.
+          </p>
+        </div>
+      </section>
+      <section class="section wrap" id="architecture">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">03 / Deliberately bounded architecture</p>
+            <h2>Separate trust boundaries.<br />One modular backend.</h2>
+          </div>
+          <p>
+            The Windows sensor lives where Event Log and DPAPI access are
+            available. The API keeps ingestion, correlation, and alert
+            persistence together. PostgreSQL stays off the host network.
+          </p>
+        </div>
+        <div class="architecture-frame">
+          <svg
+            viewBox="0 0 1040 500"
+            role="img"
+            aria-labelledby="architecture-title architecture-desc"
+          >
+            <title id="architecture-title">
+              SentinelForge component and trust-boundary diagram
+            </title>
+            <desc id="architecture-desc">
+              An isolated Windows VM contains simulations, Sysmon and the .NET
+              sensor with a local spool. Authenticated JSON batches reach a
+              FastAPI backend inside Docker Compose. The backend writes to
+              internal-only PostgreSQL and serves React through Nginx. A CLI can
+              seed synthetic events. One active API instance is supported.
+            </desc>
+            <defs>
+              <marker
+                id="arch-arrow"
+                markerWidth="8"
+                markerHeight="8"
+                refX="7"
+                refY="4"
+                orient="auto"
+              >
+                <path d="M0 0L8 4L0 8" fill="none" stroke="#6ed3bc" />
+              </marker>
+            </defs>
+            <rect
+              x="20"
+              y="20"
+              width="1000"
+              height="155"
+              rx="14"
+              fill="#101e21"
+              stroke="#33474b"
+              stroke-dasharray="6 5"
+            />
+            <rect
+              x="20"
+              y="235"
+              width="1000"
+              height="245"
+              rx="14"
+              fill="#101e21"
+              stroke="#33474b"
+            />
+            <g font-family="system-ui, sans-serif">
+              <text x="42" y="51" fill="#a6bbb5" font-size="14">
+                ISOLATED WINDOWS LAB VM
+              </text>
+              <text x="42" y="269" fill="#a6bbb5" font-size="14">
+                LOCAL DOCKER COMPOSE STACK
+              </text>
+            </g>
+            <g fill="#172c2b" stroke="#4d887d">
+              <rect x="65" y="78" width="210" height="65" rx="9" />
+              <rect x="345" y="78" width="170" height="65" rx="9" />
+              <rect x="590" y="78" width="365" height="65" rx="9" />
+              <rect x="370" y="303" width="280" height="105" rx="9" />
+              <rect x="715" y="303" width="265" height="105" rx="9" />
+              <rect x="60" y="303" width="240" height="105" rx="9" />
+            </g>
+            <g
+              fill="none"
+              stroke="#6ed3bc"
+              stroke-width="1.6"
+              marker-end="url(#arch-arrow)"
+            >
+              <path d="M275 110H338" />
+              <path d="M515 110H583" />
+              <path d="M772 144V208H510V296" />
+              <path d="M650 355H708" />
+              <path d="M300 345H363" />
+              <path d="M370 374H307" />
+            </g>
+            <g
+              font-family="system-ui, sans-serif"
+              text-anchor="middle"
+              fill="#e6f2ee"
+            >
+              <text x="170" y="104" font-size="17">Safe simulations</text>
+              <text x="170" y="125" font-size="12" fill="#a6bbb5">
+                lab gate + cleanup
+              </text>
+              <text x="430" y="116" font-size="18">Sysmon</text>
+              <text x="772" y="104" font-size="17">
+                .NET sensor + bounded spool
+              </text>
+              <text x="772" y="125" font-size="12" fill="#a6bbb5">
+                enrollment · batching · retry · DPAPI
+              </text>
+              <text x="654" y="195" font-size="12" fill="#8de6cd">
+                Authenticated JSON batches
+              </text>
+              <text x="510" y="336" font-size="18">FastAPI</text>
+              <text x="510" y="360" font-size="12" fill="#a6bbb5">
+                normalize · detect · correlate
+              </text>
+              <text x="510" y="383" font-size="12" fill="#a6bbb5">
+                query · export · live notifications
+              </text>
+              <text x="847" y="344" font-size="18">PostgreSQL</text>
+              <text x="847" y="368" font-size="12" fill="#a6bbb5">
+                events · lineage · rules · evidence
+              </text>
+              <text x="847" y="388" font-size="12" fill="#8de6cd">
+                internal-only network
+              </text>
+              <text x="180" y="339" font-size="18">React + Nginx</text>
+              <text x="180" y="364" font-size="12" fill="#a6bbb5">
+                operator views + graph
+              </text>
+              <text x="180" y="387" font-size="12" fill="#a6bbb5">
+                API queries / WebSocket updates
+              </text>
+              <text x="510" y="448" font-size="13" fill="#e3b86d">
+                sentinelctl → API · synthetic demo, export, health, retention
+              </text>
+            </g>
+          </svg>
+          <p class="footnote">
+            One active API instance is supported. The local stack binds to
+            loopback; remote sensor traffic needs a reviewed TLS and firewall
+            boundary.
+          </p>
+        </div>
+        <a
+          class="text-link"
+          href="https://github.com/HMMcKay/SentinelForge/blob/main/docs/architecture.md"
+          >Read the architecture and decision records
+          <span aria-hidden="true">↗</span></a
+        >
+      </section>
+      <section class="section section-tint" id="timeline">
+        <div class="wrap">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">04 / The primary investigation view</p>
+              <h2>A graph that explains<br />its relationships.</h2>
+            </div>
+            <p>
+              Process lineage, activity, alert evidence, correlation, and
+              scenario membership have explicit edge types. Selecting an alert
+              highlights the stored evidence that caused it to fire.
+            </p>
+          </div>
+          <div class="timeline-layout">
+            <figure class="screenshot-frame">
+              <button
+                class="image-expand"
+                data-image="assets/sentinelforge-timeline.png"
+                data-caption="Forensic timeline — real application capture using deterministic synthetic telemetry."
+                aria-label="Enlarge the forensic timeline screenshot"
+              >
+                <img
+                  src="assets/sentinelforge-timeline.png"
+                  width="1440"
+                  height="1263"
+                  alt="SentinelForge forensic timeline showing connected processes, events, alert evidence and scenario relationships."
+                  loading="lazy"
+                /><span
+                  >Inspect screenshot <span aria-hidden="true">↗</span></span
+                >
+              </button>
+              <figcaption>
+                Real application capture · deterministic synthetic data.
+              </figcaption>
+            </figure>
+            <div class="timeline-notes">
+              <h3>Follow the chain, then inspect the event.</h3>
+              <p>
+                Filter by host, rule, ATT&CK technique, severity, or scenario.
+                Zoom and pan through process relationships. Replay event time
+                without changing detection results.
+              </p>
+              <ul class="edge-legend">
+                <li>
+                  <span class="edge process"></span>Process lineage and activity
+                </li>
+                <li>
+                  <span class="edge evidence"></span>Alert-to-evidence links
+                </li>
+                <li>
+                  <span class="edge correlation"></span>Correlation
+                  relationships
+                </li>
+                <li><span class="edge scenario"></span>Scenario membership</li>
+              </ul>
+              <p class="footnote">
+                Clustering and query bounds keep the view manageable. Truncation
+                is surfaced; the graph does not pretend to display every event
+                at arbitrary scale.
+              </p>
+              <a
+                class="text-link"
+                href="https://github.com/HMMcKay/SentinelForge/blob/main/docs/timeline.md"
+                >Inspect the timeline design
+                <span aria-hidden="true">↗</span></a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section wrap" id="engineering">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">05 / What the work demonstrates</p>
+            <h2>Engineering choices<br />you can inspect.</h2>
+          </div>
+          <p>
+            This independent, AI-assisted project makes design choices
+            reviewable across several disciplines. The source, tests, and
+            decision records show how those choices fit together.
+          </p>
+        </div>
+        <div class="engineering-list">
+          <article>
+            <span class="discipline-number">01</span>
+            <div>
+              <h3>Windows telemetry and delivery</h3>
+              <p>
+                Event XML normalization, process GUID lineage, a durable bounded
+                spool, delivery retry, and DPAPI-protected sensor identity.
+                Event-source abstractions separate portable tests from real
+                Windows integration.
+              </p>
+            </div>
+            <a href="https://github.com/HMMcKay/SentinelForge/tree/main/agent"
+              >Sensor source <span aria-hidden="true">↗</span></a
+            >
+          </article>
+          <article>
+            <span class="discipline-number">02</span>
+            <div>
+              <h3>Detection engineering</h3>
+              <p>
+                A validated Sigma-like subset with unsupported features rejected
+                explicitly. Stateful sequences and thresholds use grouping, time
+                windows, deduplication, and retained evidence. Positive and
+                near-miss fixtures support regression.
+              </p>
+            </div>
+            <a
+              href="https://github.com/HMMcKay/SentinelForge/tree/main/detections"
+              >Rules and rationale <span aria-hidden="true">↗</span></a
+            >
+          </article>
+          <article>
+            <span class="discipline-number">03</span>
+            <div>
+              <h3>Security and system design</h3>
+              <p>
+                Strict schemas, idempotent ingestion, separate sensor/operator
+                credentials, internal database networking, bounded queries, and
+                allowlisted reversible simulations. A STRIDE threat model
+                records assumptions and residual risk.
+              </p>
+            </div>
+            <a
+              href="https://github.com/HMMcKay/SentinelForge/blob/main/docs/threat-model.md"
+              >Threat model <span aria-hidden="true">↗</span></a
+            >
+          </article>
+          <article>
+            <span class="discipline-number">04</span>
+            <div>
+              <h3>Full-stack delivery and verification</h3>
+              <p>
+                A FastAPI/PostgreSQL backend, React/TypeScript graph dashboard,
+                and containerized CLI. Unit, boundary, safety, and browser tests
+                sit alongside pinned CI, dependency audits, CodeQL, and SBOM
+                workflows.
+              </p>
+            </div>
+            <a
+              href="https://github.com/HMMcKay/SentinelForge/tree/main/.github/workflows"
+              >Tests and CI <span aria-hidden="true">↗</span></a
+            >
+          </article>
+        </div>
+        <div class="example-note">
+          <p class="eyebrow">An inspectable example</p>
+          <h3>cmd → PowerShell, grouped by host and user.</h3>
+          <p>
+            A sequence rule requires the ordered process behavior within two
+            minutes and deduplicates for five. The alert retains the matched
+            events and investigation notes. Another rule models a file burst: at
+            least five create/modify events within 30 seconds for the same host
+            and process GUID.
+          </p>
+          <a
+            class="text-link"
+            href="https://github.com/HMMcKay/SentinelForge/blob/main/detections/rules/suspicious_process_sequence.yml"
+            >Read the sequence rule <span aria-hidden="true">↗</span></a
+          >
+        </div>
+      </section>
+      <section class="section section-tint" id="validation">
+        <div class="wrap proof-layout">
+          <div>
+            <p class="eyebrow">06 / Evidence, with limits</p>
+            <h2>A reproducible lab.<br />Not an EDR claim.</h2>
+            <p>
+              The
+              <a
+                href="https://github.com/HMMcKay/SentinelForge/blob/main/docs/validation-report.md"
+                >July 27, 2026 validation record</a
+              >
+              documents backend, frontend, CLI, sensor, scenario-safety, and
+              browser checks. It also identifies the Windows integrations that
+              were not exercised.
+            </p>
+            <p>
+              Those recorded results are dated evidence, not a guarantee about
+              every future checkout.
+              <a href="https://github.com/HMMcKay/SentinelForge/actions"
+                >Repository workflows</a
+              >
+              expose current build and test results.
+            </p>
+          </div>
+          <div class="limits-panel">
+            <h3>What this project does not prove</h3>
+            <ul>
+              <li>
+                No EDR or SIEM equivalence, kernel sensor, anti-tamper, or
+                protected telemetry path.
+              </li>
+              <li>
+                No full ATT&CK or Sigma coverage. The rule and technique
+                catalogs are deliberately small.
+              </li>
+              <li>
+                Synthetic positives do not establish effectiveness against every
+                variation or evasion.
+              </li>
+              <li>
+                Portable sensor tests do not prove real Sysmon collection,
+                Windows service installation, or every DPAPI service identity.
+              </li>
+              <li>
+                The trusted local-lab access model is not internet-facing,
+                multi-tenant production authentication.
+              </li>
+            </ul>
+            <a
+              class="text-link"
+              href="https://github.com/HMMcKay/SentinelForge#what-this-project-does-not-prove"
+              >Read the complete limitations
+              <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </div>
+      </section>
+      <section class="section wrap" id="run">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">07 / Try the local lab</p>
+            <h2>Start with the demo.<br />No Windows VM needed.</h2>
+          </div>
+          <p>
+            Use Docker with Compose v2 and PowerShell 7. The bootstrap script
+            generates ignored local secrets and starts the stack. Live Windows
+            behaviors remain separately lab-gated.
+          </p>
+        </div>
+        <div class="run-layout">
+          <div class="code-panel">
+            <div class="code-header">
+              <span>PowerShell / local checkout</span
+              ><button type="button" id="copy-commands">Copy commands</button>
+            </div>
+            <pre><code id="run-commands">git clone https://github.com/HMMcKay/SentinelForge.git
+cd SentinelForge
+./scripts/bootstrap.ps1
+docker compose --profile tools run --rm sentinelctl demo seed --seed 1337</code></pre>
+            <p id="copy-status" role="status"></p>
+          </div>
+          <div class="run-notes">
+            <ol>
+              <li>Open <code>http://127.0.0.1:8080</code>.</li>
+              <li>Choose an alert and read its matched evidence.</li>
+              <li>Open Timeline, select the alert, and replay its chain.</li>
+              <li>
+                Compare the result with the rule and its near-miss fixtures.
+              </li>
+            </ol>
+            <p>
+              This GitHub Pages site is a static explanation. It does not host
+              the API, accept telemetry, or execute simulations.
+            </p>
+            <a
+              class="text-link"
+              href="https://github.com/HMMcKay/SentinelForge/blob/main/docs/demo.md"
+              >Follow the full demo walkthrough
+              <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="wrap site-footer">
+      <div>
+        <a class="brand" href="#top">Sentinel<span>Forge</span></a>
+        <p>A hobby project with a serious interest in how detections work.</p>
+      </div>
+      <nav aria-label="Project resources">
+        <a href="https://github.com/HMMcKay/SentinelForge">Repository</a
+        ><a
+          href="https://github.com/HMMcKay/SentinelForge/blob/main/SECURITY.md"
+          >Security</a
+        ><a href="https://github.com/HMMcKay/SentinelForge/blob/main/LICENSE"
+          >MIT license</a
+        >
+      </nav>
+    </footer>
+    <dialog id="image-dialog" aria-labelledby="image-caption">
+      <form method="dialog">
+        <button class="dialog-close" aria-label="Close screenshot">
+          Close <span aria-hidden="true">×</span>
+        </button>
+      </form>
+      <img id="dialog-image" alt="" />
+      <p id="image-caption"></p>
+    </dialog>
+  </body>
+</html>

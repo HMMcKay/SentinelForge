@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentinelforge.local/schemas/normalized-event-v1.schema.json",
+  "title": "SentinelForge normalized event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "event_time", "event_type", "host", "source"],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9_.:{}-]+$"},
+    "event_time": {"type": "string", "format": "date-time"},
+    "event_type": {
+      "enum": ["process_start", "process_end", "network_connection", "dns_query", "file_create", "file_modify", "file_delete", "registry_set", "registry_delete", "scheduled_task", "powershell", "security_control", "authentication"]
+    },
+    "scenario_run_id": {"type": ["string", "null"], "format": "uuid", "maxLength": 36},
+    "raw_event_ref": {"type": ["string", "null"], "maxLength": 256},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider"],
+      "properties": {
+        "provider": {"type": "string", "minLength": 1, "maxLength": 255},
+        "channel": {"type": ["string", "null"], "maxLength": 255},
+        "event_code": {"type": ["string", "null"], "maxLength": 32},
+        "record_id": {"type": ["string", "null"], "maxLength": 64}
+      }
+    },
+    "host": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hostname"],
+      "properties": {
+        "hostname": {"type": "string", "minLength": 1, "maxLength": 255},
+        "host_id": {"type": ["string", "null"], "maxLength": 255},
+        "os_name": {"type": ["string", "null"], "maxLength": 128},
+        "os_version": {"type": ["string", "null"], "maxLength": 128}
+      }
+    },
+    "user": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {"type": ["string", "null"], "maxLength": 255},
+        "domain": {"type": ["string", "null"], "maxLength": 255},
+        "sid": {"type": ["string", "null"], "maxLength": 184}
+      }
+    },
+    "process": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "pid": {"type": ["integer", "null"], "minimum": 0, "maximum": 4294967295},
+        "guid": {"type": ["string", "null"], "maxLength": 128},
+        "name": {"type": ["string", "null"], "maxLength": 255},
+        "executable": {"type": ["string", "null"], "maxLength": 32768},
+        "command_line": {"type": ["string", "null"], "maxLength": 32768},
+        "parent_pid": {"type": ["integer", "null"], "minimum": 0, "maximum": 4294967295},
+        "parent_guid": {"type": ["string", "null"], "maxLength": 128},
+        "parent_name": {"type": ["string", "null"], "maxLength": 255},
+        "parent_executable": {"type": ["string", "null"], "maxLength": 32768},
+        "integrity_level": {"type": ["string", "null"], "maxLength": 64},
+        "sha256": {"type": ["string", "null"], "pattern": "^[A-Fa-f0-9]{64}$"}
+      }
+    },
+    "network": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "source_ip": {"type": ["string", "null"], "maxLength": 64},
+        "source_port": {"type": ["integer", "null"], "minimum": 0, "maximum": 65535},
+        "destination_ip": {"type": ["string", "null"], "maxLength": 64},
+        "destination_port": {"type": ["integer", "null"], "minimum": 0, "maximum": 65535},
+        "protocol": {"type": ["string", "null"], "maxLength": 32},
+        "dns_question": {"type": ["string", "null"], "maxLength": 253}
+      }
+    },
+    "file": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["path", "operation"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1, "maxLength": 32768},
+        "operation": {"enum": ["create", "modify", "delete", "rename"]},
+        "sha256": {"type": ["string", "null"], "pattern": "^[A-Fa-f0-9]{64}$"},
+        "size": {"type": ["integer", "null"], "minimum": 0}
+      }
+    },
+    "registry": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["key_path", "operation"],
+      "properties": {
+        "key_path": {"type": "string", "minLength": 1, "maxLength": 32768},
+        "value_name": {"type": ["string", "null"], "maxLength": 16384},
+        "value_data": {"type": ["string", "null"], "maxLength": 65536},
+        "operation": {"enum": ["set", "delete", "create_key", "delete_key"]}
+      }
+    },
+    "attack_tags": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^T[0-9]{4}(\\.[0-9]{3})?$"}
+    },
+    "metadata": {"type": "object", "maxProperties": 64}
+  },
+  "allOf": [
+    {"if": {"properties": {"event_type": {"enum": ["process_start", "process_end", "powershell"]}}}, "then": {"required": ["process"], "properties": {"process": {"type": "object"}}}},
+    {"if": {"properties": {"event_type": {"enum": ["network_connection", "dns_query"]}}}, "then": {"required": ["network"], "properties": {"network": {"type": "object"}}}},
+    {"if": {"properties": {"event_type": {"enum": ["file_create", "file_modify", "file_delete"]}}}, "then": {"required": ["file"], "properties": {"file": {"type": "object"}}}},
+    {"if": {"properties": {"event_type": {"enum": ["registry_set", "registry_delete"]}}}, "then": {"required": ["registry"], "properties": {"registry": {"type": "object"}}}}
+  ]
+}

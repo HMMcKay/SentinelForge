@@ -1,0 +1,16 @@
+.git
+.github
+.env
+private
+**/__pycache__
+**/.pytest_cache
+**/node_modules
+frontend/dist
+frontend/coverage
+frontend/playwright-report
+agent/**/bin
+agent/**/obj
+data
+output
+*.md
+!backend/README.md

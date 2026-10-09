@@ -1,0 +1,10 @@
+node_modules
+dist
+coverage
+output
+playwright-report
+test-results
+.vite
+.eslintcache
+.env
+*.log
